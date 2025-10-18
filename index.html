@@ -1,0 +1,142 @@
+---
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neslihan Atagül Fan App</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; padding:0; background:#fff0f5; color:#333; }
+  header { background:#ff4081; color:white; text-align:center; padding:15px 0; position:sticky; top:0; box-shadow:0 2px 5px rgba(0,0,0,0.2); z-index:1000; }
+  h1,h2 { margin:10px 0; }
+  main { padding:15px; }
+  section { margin-bottom:25px; }
+  .gallery { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:10px; }
+  .gallery img { width:80%; flex:0 0 auto; border-radius:10px; scroll-snap-align:start; transition: transform 0.3s; }
+  .gallery img:hover { transform: scale(1.05); }
+  .btn { display:inline-block; background:#ff4081; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; margin-top:10px; transition:background 0.3s; }
+  .btn:hover { background:#e03270; }
+  footer { text-align:center; padding:15px; background:#ff4081; color:white; box-shadow:0 -2px 5px rgba(0,0,0,0.2); }
+  iframe { border-radius:10px; }
+  .messages { border:1px solid #ccc; border-radius:10px; padding:10px; background:white; max-height:300px; overflow-y:auto; margin-top:10px; }
+  .message { padding:8px; margin-bottom:8px; border-bottom:1px solid #eee; border-radius:5px; background:#ffe6f0; }
+  .fan-edit { display:flex; flex-wrap:wrap; gap:10px; }
+  .fan-edit img { width:48%; border-radius:10px; }
+  .members ul { list-style:none; padding:0; }
+  .members li { padding:5px 0; }
+  .emoji-btn { cursor:pointer; margin-left:5px; font-size:18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Neslihan Atagül Fan App</h1>
+</header>
+
+<main>
+  <section id="bio">
+    <h2>Hakkında</h2>
+    <p>Neslihan Atagül, Türk televizyon ve sinema oyuncusudur. “Kara Sevda” dizisiyle büyük bir hayran kitlesi kazanmıştır.</p>
+  </section>
+
+  <section id="galeri">
+    <h2>Fotoğraflar</h2>
+    <div class="gallery">
+      <img src="https://i.imgur.com/3aXK3Kh.jpg" alt="Neslihan Atagül">
+      <img src="https://i.imgur.com/0k4RvqJ.jpg" alt="Neslihan Atagül">
+      <img src="https://i.imgur.com/jTnNtrS.jpg" alt="Neslihan Atagül">
+    </div>
+  </section>
+
+  <section id="videolar">
+    <h2>Videolar</h2>
+    <iframe width="100%" height="200" src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
+    <a class="btn" href="https://www.youtube.com/results?search_query=neslihan+atagül" target="_blank">Daha Fazla Video</a>
+  </section>
+
+  <section id="messages-section">
+    <h2>Mesajlar</h2>
+    <div class="messages" id="messages">
+      <!-- Neslihan Atagül mesajları (20 Ağustos eklemesi) -->
+      <div class="message" data-date="2025-08-20">Merhaba sevgili hayranlarım! 💖</div>
+      <div class="message" data-date="2025-08-20">Yeni projelerim için çok heyecanlıyım! 🎬</div>
+    </div>
+    <p>Hayranlar mesajlara tepki bırakabilir:</p>
+    <span class="emoji-btn" onclick="addReaction('❤️')">❤️</span>
+    <span class="emoji-btn" onclick="addReaction('👍')">👍</span>
+    <span class="emoji-btn" onclick="addReaction('😆')">😆</span>
+    <span class="emoji-btn" onclick="addReaction('😍')">😍</span>
+  </section>
+
+  <section id="fan-edits">
+    <h2>Fan Editleri</h2>
+    <div class="fan-edit">
+      <img src="https://i.imgur.com/xyz1.jpg" alt="Fan Edit 1">
+      <img src="https://i.imgur.com/xyz2.jpg" alt="Fan Edit 2">
+    </div>
+  </section>
+
+  <section class="members">
+    <h2>Üyeler</h2>
+    <ul>
+      <li>Hayran1</li>
+      <li>Hayran2</li>
+      <li>Hayran3</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <p>Fan Sayfası - Sosyal Medya: <a href="https://www.instagram.com/neslihanatagul" target="_blank" class="btn">Instagram</a></p>
+</footer>
+
+<script>
+  // PWA manifest
+  const manifest = {
+    name: "Neslihan Atagül Fan App",
+    short_name: "NeslihanApp",
+    start_url: ".",
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: "#ff4081",
+    icons: [
+      { src: "https://i.imgur.com/3aXK3Kh.jpg", sizes: "192x192", type: "image/png" },
+      { src: "https://i.imgur.com/3aXK3Kh.jpg", sizes: "512x512", type: "image/png" }
+    ]
+  };
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type:'application/json'}));
+  document.head.appendChild(link);
+
+  // Service Worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
+      self.addEventListener('install', e => { console.log('SW kuruldu'); });
+      self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(()=>caches.match(e.request))); });
+    `], {type:'text/javascript'})))
+    .then(()=>console.log('SW kayıt edildi'))
+    .catch(()=>console.log('SW kayıt edilemedi'));
+  }
+
+  // Emoji tepkileri
+  const messagesDiv = document.getElementById('messages');
+  function addReaction(emoji){
+    const msg = document.createElement('div');
+    msg.textContent = emoji;
+    msg.style.display = 'inline-block';
+    msg.style.marginLeft = '5px';
+    msg.style.fontSize = '18px';
+    // Eklenen emoji tüm mesajların sonuna ekleniyor
+    messagesDiv.querySelectorAll('.message').forEach(m=>{
+      if(!m.querySelector('.reaction')) {
+        const span = document.createElement('span');
+        span.className='reaction';
+        m.appendChild(span);
+      }
+      m.querySelector('.reaction').textContent += emoji;
+    });
+  }
+</script>
+</body>
+</html>
